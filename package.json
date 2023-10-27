@@ -1,0 +1,14 @@
+{
+  "name": "assist-tools",
+  "version": "0.0.1",
+  "description": "一个辅助开发的工具方法集合",
+  "main": "index.js",
+  "type": "module",
+  "keywords": [
+    "assist-tools",
+    "tools",
+    "utils"
+  ],
+  "author": "feiYu",
+  "license": "ISC"
+}
