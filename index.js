@@ -142,7 +142,7 @@ export const isEffectiveValue = (...val) => {
  * @returns {boolean} 是否通过测试
  */
 export const isTest = (data, testFunc, notTestField = []) => {
-    if (data !== null && (typeof data === 'object' || typeof data === 'function')) throw new TypeError('data must be a object')
+    if (data !== null && !(typeof data === 'object' || typeof data === 'function')) throw new TypeError('data must be a object')
     if (isType(data) !== 'object') throw new TypeError('data must be a object')
     if (typeof testFunc !== 'function') throw new TypeError('testFunc must be a function')
     if (isType(notTestField) !== 'array') throw new TypeError('notTestField must be a array')
