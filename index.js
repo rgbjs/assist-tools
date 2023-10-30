@@ -1,7 +1,6 @@
 /**
- * @version 0.0.1
  * @author feiYu
- * @lastModified 2023-10-27
+ * @lastModified 2023-10-30
  */
 
 /** 
@@ -142,8 +141,9 @@ export const isEffectiveValue = (...val) => {
  * @returns {boolean} 是否通过测试
  */
 export const isTest = (data, testFunc, notTestField = []) => {
-    if (data !== null && !(typeof data === 'object' || typeof data === 'function')) throw new TypeError('data must be a object')
-    if (isType(data) !== 'object') throw new TypeError('data must be a object')
+    if (!(isType(data) === 'function' || isType(data) === 'object' || isType(data) === 'array')) {
+        throw new TypeError('data must be a object or array or function')
+    }
     if (typeof testFunc !== 'function') throw new TypeError('testFunc must be a function')
     if (isType(notTestField) !== 'array') throw new TypeError('notTestField must be a array')
     for (let k in data) {
@@ -154,7 +154,7 @@ export const isTest = (data, testFunc, notTestField = []) => {
 }
 
 /**
- * 判断一个对象/数组/函数上的所有属性值是否都为有效值, ('', null, undefined, NaN, Infinity, -Infinity 被视为无效值)
+ * 判断一个对象/数组/函数上的所有属性值中是否都为有效值, ('', null, undefined, NaN, Infinity, -Infinity 被视为无效值)
  * @param {object|array|function} data 用于测试的对象
  * @param {array<string> | undefined} notTestField 不进行测试的属性, 示例: ['a', 'b'] [可选]
  * @returns {boolean} 是否都为有效值
@@ -233,4 +233,46 @@ export const cloneEffectiveValue = (data, condition = isEffectiveValue) => {
         }
     }
     return clone(data, true, handle)
+}
+
+/**
+ * 函数防抖
+ * @param {function} callback 需要防抖的函数
+ * @param {number} [delay] 防抖时长 , 默认为 200ms [可选]
+ * @returns {function} 包装过的防抖函数
+ */
+export const debounce = (callback, delay = 200) => {
+    if (typeof callback !== 'function') throw new TypeError("'callback' type must be a function !")
+    if (!isNum(delay)) throw new TypeError("'delay' type must be a number and 'delay' value not 'NaN' or 'Infinity' or '-Infinity' !")
+
+    let timer = null
+    return function (...arg) {
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+            callback.apply(this, arg)
+        }, delay)
+    }
+}
+
+/** 长度不为 2 , 则前方补充 0 */
+const _completion = (content) => {
+    const str = String(content)
+    if (str.length < 2) return 0 + str
+    return str
+}
+
+/**
+ * 将时间戳/时间对象转为一个可读时间
+ * @param {number|Date} timer 一个时间戳
+ * @returns {String} 示例: 2023-10-30 22:23:00
+ */
+export const convertTimer = (timer) => {
+    if (!((timer instanceof Date) || typeof timer === 'number')) {
+        throw new TypeError('timer must be a number or a Date object')
+    }
+    let date = timer
+    if (typeof timer === 'number') {
+        date = new Date(+timer)
+    }
+    return `${date.getFullYear()}-${_completion(date.getMonth() + 1)}-${_completion(date.getDate())} ${_completion(date.getHours())}:${_completion(date.getMinutes())}:${_completion(date.getSeconds())}`
 }

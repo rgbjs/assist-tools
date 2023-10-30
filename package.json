@@ -1,6 +1,6 @@
 {
   "name": "assist-tools",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "一个辅助开发的工具方法集合",
   "main": "index.js",
   "type": "module",
