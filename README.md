@@ -480,9 +480,9 @@ notEmpty({a: 1, b: 'a', c: undefined, d: '', e: NaN, f: null}) // false
 
 接收三个参数: clone(data, deep, func)
 
-- data 克隆的数据源
-- deep 是否深度克隆(深拷贝) , 默认为 true [可选]
-- func 控制器, 该参数为一个函数, 接收三个参数, 通过传递该参数可以控制克隆行为 [可选]
+- data {object|array} 克隆的数据源
+- deep {boolean} 是否深度克隆(深拷贝) , 默认为 true [可选]
+- func {function} 控制器, 该参数为一个函数, 接收三个参数, 通过传递该参数可以控制克隆行为 [可选]
   - newData 克隆后的新对象/数组
   - k 当前进行中的字段
   - val 当前进行中的值
@@ -523,7 +523,7 @@ clone({a: [1, {b: 2}]}, true, (newData, k, val) => {
 接收三个参数: cloneEffectiveValue(data, condition)
 
 - data 克隆的数据源
-- condition 控制器, 该参数为一个函数, 接收一个参数, 通过传递该参数可以控制是否克隆的行为 [可选]
+- condition {function} 控制器, 该参数为一个函数, 接收一个参数, 通过传递该参数可以控制是否克隆的行为 [可选]
   - val 当前进行中的值
 
 在控制器中通过返回 true / false 来决定是否克隆, true 克隆该值, false 丢弃该值
@@ -543,5 +543,70 @@ cloneEffectiveValue({a: [1, {b: 2, c: null}]}) // {a: [1, {b: 2}]}
 cloneEffectiveValue({a:[1, {b: 2, c: null, d: ''}]}, (val) => {
     return val === 2 ? false : true
 }) // {a:[1, {c: null, d: ''}]}
+```
+
+
+
+
+
+## debounce()
+
+函数防抖, 传入一个函数返回包装后的防抖函数
+
+**接收参数:** debounce(callback, delay)
+
+- callback {function} 需要防抖的函数
+- delay {number} 防抖的时长(单位/毫秒), 默认为 200 [可选]
+
+
+
+**返回值:**
+
+类型: function
+
+返回一个保证后的防抖函数
+
+
+
+**示例:**
+
+```js
+const function say() {
+    console.log(111)
+}
+
+const sayFn1 = debounce(say, 300)
+sayFn1()
+sayFn1()
+sayFn1() // 111 300 毫秒内只输出1次
+```
+
+
+
+
+
+## convertTimer()
+
+将时间戳/时间对象转为一个可读时间
+
+**接收参数:** convertTimer(timer)
+
+- timer {number|Date} 时间戳/时间对象
+
+
+
+**返回值:**
+
+类型: string
+
+一个可读时间, 示例: 2023-10-30 22:23:00
+
+
+
+**示例:**
+
+```js
+ convertTimer(new Date()) // 2023-10-30 22:23:00
+convertTimer(Date.now()) // 2023-10-30 22:23:00
 ```
 
