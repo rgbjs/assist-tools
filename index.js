@@ -3,10 +3,14 @@
  * @lastModified 2023-10-30
  */
 
+/**
+ * @typedef {'number'|'string'|'boolean'|'symbol'|'bigint'|'undefined'|'null'|'object'|'array'} IsType
+ */
+
 /** 
  * 判断数据类型
  * @param {*} data 需要判断的数据, 该方法能够区分 null 和 array
- * @returns {string}
+ * @returns {IsType} 'number' | 'string' | 'boolean' | 'symbol' | 'bigint' | 'undefined' | 'null' | 'object' | 'array'
  */
 export const isType = (data) => {
     if (data === null) return 'null'
@@ -20,6 +24,7 @@ export const isType = (data) => {
  * @returns {boolean}
  */
 export const isNumber = (...data) => {
+    if (data.length === 0) return false
     return data.every(item => {
         if (typeof item === 'number') return true
         return false
@@ -32,6 +37,7 @@ export const isNumber = (...data) => {
  * @returns {boolean}
  */
 export const isString = (...data) => {
+    if (data.length === 0) return false
     return data.every(item => {
         if (typeof item === 'string') return true
         return false
@@ -44,6 +50,7 @@ export const isString = (...data) => {
  * @returns {boolean}
  */
 export const isNum = (...data) => {
+    if (data.length === 0) return false
     return data.every(item => {
         if (
             typeof item === 'number'
@@ -56,13 +63,15 @@ export const isNum = (...data) => {
 }
 
 /**
- * 判断数据是否为整数, 由于语言特性 1.0 这类数字也会被判断为整数
+ * - 判断数据是否为整数, 由于语言特性 1.0 这类数字也会被判断为整数
  * @param {*} data 需要判断的数据, 所有传入的参数都通过测试将返回 true, 否则返回 false
  * @returns {boolean}
  */
 export const isInt = (...data) => {
+    if (data.length === 0) return false
     return data.every(item => {
         if (!isNum(item)) return false
+        console.log(item)
         if (String(item).includes('.')) return false
         return true
     })
@@ -74,6 +83,7 @@ export const isInt = (...data) => {
  * @returns {boolean}
  */
 export const isPositiveInt = (...data) => {
+    if (data.length === 0) return false
     return data.every(item => {
         if (!isInt(item)) return false
         if (item <= 0) return false
@@ -111,6 +121,7 @@ export const isDecimalLen = (num, min, max) => {
  */
 export const isDecimalLenAll = (numArr, min, max) => {
     if (!Array.isArray(numArr)) throw new TypeError('numArr must be a array')
+    if (numArr.length === 0) return false
     return numArr.every(num => isDecimalLen(num, min, max))
 }
 
@@ -120,6 +131,7 @@ export const isDecimalLenAll = (numArr, min, max) => {
  * @returns {boolean}
  */
 export const isEffectiveValue = (...val) => {
+    if (val.length === 0) return false
     return val.every((value) => {
         if (
             value === ''
