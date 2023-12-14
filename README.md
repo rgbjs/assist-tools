@@ -585,7 +585,9 @@ sayFn1() // 111 300 毫秒内只输出1次
 
 
 
-## convertTimer()
+## convertTimer() [废弃]
+
+**已废弃, 请使用 formatDate() 或更加专业的库替代处理时间**
 
 将时间戳/时间对象转为一个可读时间
 
@@ -606,7 +608,36 @@ sayFn1() // 111 300 毫秒内只输出1次
 **示例:**
 
 ```js
- convertTimer(new Date()) // 2023-10-30 22:23:00
+convertTimer(new Date()) // 2023-10-30 22:23:00
 convertTimer(Date.now()) // 2023-10-30 22:23:00
+```
+
+
+
+## formatDate()
+
+格式化一个 "日期" 为一个可读时间(本地时间), 更复杂的时间处理请使用专业的库
+
+**接收参数:** formatDate(time, format, isMillisecond)
+
+- time {string|number|Date} 一个符合时间格式的字符串或时间戳或时间对象
+- format {string} 格式化格式: YYYY-MM-DD HH:mm:ss (YYYY, MM, HH, mm, ss => 固定不可变)
+- isMillisecond {boolean} 是否显示毫秒数, 默认为 false [可选]
+
+
+
+**返回值:**
+
+类型: string
+
+格式化后的时间
+
+
+
+**示例:**
+
+```js
+formatDate(new Date(), 'YYYY-MM-DD HH:mm:ss') // 2023-12-14 16:20:10
+formatDate(Date.now(), 'YYYY/MM/DD HH:mm:ss') // 2023/12/14 16:20:10
 ```
 
