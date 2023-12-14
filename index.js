@@ -19,7 +19,7 @@ export const isType = (data) => {
 }
 
 /**
- * 判断数据是否为数字类型 (判断是否为可读数字应使用 isNum )
+ * 判断数据是否为数字类型 (判断是否为可读数字应使用 isNum() 或使用标准库方法 Number.isFinite() )
  * @param {*} data 需要判断的数据, 所有传入的参数都通过测试将返回 true, 否则返回 false
  * @returns {boolean}
  */
@@ -45,36 +45,39 @@ export const isString = (...data) => {
 }
 
 /**
- * 判断数据是否为可读的数字, 排除 NaN , Infinity , -Infinity
+ * 判断数据是否为可读的数字, 排除 NaN , Infinity , -Infinity, 内部调用标准库 Number.isFinite() 方法
+ * - 若需同时判断多个可使用该方法, 若判断单个 Number.isFinite() 方法和该方法一致
  * @param {*} data 需要判断的数据, 所有传入的参数都通过测试将返回 true, 否则返回 false
  * @returns {boolean}
  */
 export const isNum = (...data) => {
     if (data.length === 0) return false
     return data.every(item => {
-        if (
-            typeof item === 'number'
-            && item !== Infinity
-            && item !== -Infinity
-            && !Number.isNaN(item)
-        ) return true
+        // if (
+        //     typeof item === 'number'
+        //     && item !== Infinity
+        //     && item !== -Infinity
+        //     && !Number.isNaN(item)
+        // ) return true
+        if (Number.isFinite(item)) return true
         return false
     })
 }
 
 /**
- * - 判断数据是否为整数, 由于语言特性 1.0 这类数字也会被判断为整数
+ * 判断数据是否为整数, 由于语言特性 1.0 这类数字也会被判断为整数, 内部调用标准库 Number.isInteger() 方法
+ * - 若需同时判断多个可使用该方法, 若判断单个 Number.isInteger() 方法和该方法一致
  * @param {*} data 需要判断的数据, 所有传入的参数都通过测试将返回 true, 否则返回 false
  * @returns {boolean}
  */
 export const isInt = (...data) => {
     if (data.length === 0) return false
-    return data.every(item => {
-        if (!isNum(item)) return false
-        console.log(item)
-        if (String(item).includes('.')) return false
-        return true
-    })
+    // return data.every(item => {
+    //     if (!isNum(item)) return false
+    //     if (String(item).includes('.')) return false
+    //     return true
+    // })
+    return data.every(item => Number.isInteger(item))
 }
 
 /**
@@ -85,14 +88,16 @@ export const isInt = (...data) => {
 export const isPositiveInt = (...data) => {
     if (data.length === 0) return false
     return data.every(item => {
-        if (!isInt(item)) return false
-        if (item <= 0) return false
-        return true
+        // if (!isInt(item)) return false
+        // if (item <= 0) return false
+        // return true
+        if (Number.isInteger(item) && item > 0) return true
+        return false
     })
 }
 
 /**
- * 判断数据是否为 id , 即大于 0 的正整数 (该方法内部实现同 isPositiveInt 一致) , 由于语言特性 1.0 这类数字也会被判断为整数
+ * 判断数据是否为 id , 即大于 0 的正整数 (该方法是 isPositiveInt 的别名) , 由于语言特性 1.0 这类数字也会被判断为整数
  * @param {*} data 需要判断的数据, 所有传入的参数都通过测试将返回 true, 否则返回 false
  * @returns {boolean}
  */
@@ -126,7 +131,7 @@ export const isDecimalLenAll = (numArr, min, max) => {
 }
 
 /**
- * 判断传入的所有数据是否都为有效值, ('', null, undefined, NaN, Infinity, -Infinity 被视为无效值)
+ * 判断传入的所有数据是否都为有效值, (null, '', undefined, NaN, Infinity, -Infinity 被视为无效值)
  * @param {*} val 测试的数据
  * @returns {boolean}
  */
@@ -149,7 +154,7 @@ export const isEffectiveValue = (...val) => {
  * 判断一个对象/数组/函数上的所有属性值是否都通过测试
  * @param {object|array|function} data 用于测试的对象
  * @param {function} testFunc 用于测试的函数, 接收三个参数, 分别是 value 和 key 和 data(遍历的对象)
- * @param {array<string>} notTestField 不进行测试的属性, 示例: ['a', 'b'] [可选]
+ * @param {Array<string>} notTestField 不进行测试的属性, 示例: ['a', 'b'] [可选]
  * @returns {boolean} 是否通过测试
  */
 export const isTest = (data, testFunc, notTestField = []) => {
@@ -168,7 +173,7 @@ export const isTest = (data, testFunc, notTestField = []) => {
 /**
  * 判断一个对象/数组/函数上的所有属性值中是否都为有效值, ('', null, undefined, NaN, Infinity, -Infinity 被视为无效值)
  * @param {object|array|function} data 用于测试的对象
- * @param {array<string> | undefined} notTestField 不进行测试的属性, 示例: ['a', 'b'] [可选]
+ * @param {Array<string> | undefined} notTestField 不进行测试的属性, 示例: ['a', 'b'] [可选]
  * @returns {boolean} 是否都为有效值
  */
 export const notEmpty = (data, notTestField) => {
@@ -266,16 +271,45 @@ export const debounce = (callback, delay = 200) => {
     }
 }
 
-/** 长度不为 2 , 则前方补充 0 */
-const _completion = (content) => {
-    const str = String(content)
-    if (str.length < 2) return 0 + str
-    return str
+/**
+ * 格式化一个 "日期" 为一个可读时间(本地时间), 更复杂的时间处理请使用专业的库
+ * @param {string|number|Date} time 一个符合时间格式的字符串或时间戳或时间对象
+ * @param {string} format 格式化格式: YYYY-MM-DD HH:mm:ss (YYYY, MM, HH, mm, ss => 固定不可变)
+ * @param {boolean} isMillisecond 是否显示毫秒数, 默认为 false
+ * @returns {string} 格式化后的时间
+ */
+export const formatDate = (time, format = '', isMillisecond = false) => {
+    let date
+    if (time instanceof Date) {
+        date = time
+    } else {
+        date = new Date(time)
+    }
+    if (date.toString() === 'Invalid Date') {
+        throw new TypeError('time cannot be converted to a Date object')
+    }
+
+    const year = String(date.getFullYear()).padStart(4, '0')
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const hour = String(date.getHours()).padStart(2, '0')
+    const minute = String(date.getMinutes()).padStart(2, '0')
+    const second = String(date.getSeconds()).padStart(2, '0')
+    let millisecond = ''
+    if (isMillisecond) millisecond = date.getMilliseconds()
+    return format.replace('YYYY', year)
+        .replace('MM', month)
+        .replace('DD', day)
+        .replace('HH', hour)
+        .replace('mm', minute)
+        .replace('ss', second)
+        + millisecond
 }
 
 /**
- * 将时间戳/时间对象转为一个可读时间
- * @param {number|Date} timer 一个时间戳
+ * @deprecated 该方法已经弃用, 请使用 formatDate() 方法
+ * - 将时间戳/时间对象转为一个可读时间(本地时间), 更复杂的时间处理请使用专业的库
+ * @param {number|Date} timer 一个时间戳或一个时间对象
  * @returns {String} 示例: 2023-10-30 22:23:00
  */
 export const convertTimer = (timer) => {
@@ -286,5 +320,10 @@ export const convertTimer = (timer) => {
     if (typeof timer === 'number') {
         date = new Date(+timer)
     }
-    return `${date.getFullYear()}-${_completion(date.getMonth() + 1)}-${_completion(date.getDate())} ${_completion(date.getHours())}:${_completion(date.getMinutes())}:${_completion(date.getSeconds())}`
+    return `${date.getFullYear()}`.padStart(4, '0') + '-'
+        + `${date.getMonth() + 1}`.padStart(2, '0') + '-'
+        + `${date.getDate()}`.padStart(2, '0') + ' '
+        + `${date.getHours()}`.padStart(2, '0') + ':'
+        + `${date.getMinutes()}`.padStart(2, '0') + ':'
+        + `${date.getSeconds()}`.padStart(2, '0')
 }
