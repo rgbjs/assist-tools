@@ -62,8 +62,12 @@ console.log(isType(10)) // 'number'
 ```js
 isType(10) // 'number'
 isType('a') // 'string'
-isType(()=> {}) // 'function'
+isType(true) // 'boolean'
+isType(BigInt(1)) // 'bigint'
+isType(Symbol()) // 'symbol'
+isType(undefined) // 'undefined'
 isType(null) // 'null'
+isType(()=> {}) // 'function'
 isType([]) // 'array'
 isType({}) // 'object'
 isType(new Date()) // 'object'
@@ -307,54 +311,6 @@ isDecimalLen(1.00000001, 0, 2) // false
 
 
 
-
-
-## isDecimalLenAll()
-
-判断多个数字后有效小数长度是否在指定范围内
-
-例如: 
-
-1.00000 有效小数长度为 0
-
-1.00200 有效小数长度为 3
-
-1.00123 有效小数长度为 5
-
-
-
-**接收参数:**
-
-有效数值 (`NaN` , `Infinity` , `-Infinity` 不被视为有效数值)
-
-接收三个参数: isDecimalLen(numArr, min, max)
-
-- numArr 有效的数值数组
-- min 有效小数最小长度
-- max 有效小数最大长度
-
-
-
-**返回值:**
-
-类型: boolean
-
-数组内所有数字有效小数长度都在指定范围内时返回 true, 只要有一个为通过测试则返回 false
-
-
-
-**示例:**
-
-```js
-isDecimalLenAll([1.1, 1.0000], 0, 1) // true
-isDecimalLenAll([1.00000000, 2], 0, 2) // true
-isDecimalLenAll([1.00000001], 0, 2) // false
-```
-
-
-
-
-
 ## isEffectiveValue()
 
 判断所有传入的数据是否为`有效值`
@@ -585,7 +541,89 @@ sayFn1() // 111 300 毫秒内只输出1次
 
 
 
-## convertTimer() [废弃]
+## formatDate()
+
+格式化一个 "日期" 为一个可读时间(本地时间), 更复杂的时间处理请使用专业的库
+
+**接收参数:** formatDate(time, format, isMillisecond)
+
+- time {string|number|Date} 一个符合时间格式的字符串或时间戳或时间对象
+  - 不符合条件的将抛出 TypeError
+  - 如果时间无法保证格式, 请使用 try catch 进行错误捕获, 以防止影响后续运行
+
+- format {string} 格式化格式: YYYY-MM-DD HH:mm:ss (YYYY, MM, HH, mm, ss => 关键字将被替换), 默认为 'YYYY-MM-DD HH:mm:ss' [可选]
+- isMillisecond {boolean} 是否显示毫秒数, 默认为 false [可选]
+
+
+
+**返回值:**
+
+类型: string
+
+格式化后的时间
+
+
+
+**示例:**
+
+```js
+formatDate(new Date(), 'YYYY-MM-DD HH:mm:ss') // 2023-12-14 16:20:10
+formatDate(Date.now(), 'YYYY/MM/DD HH:mm:ss') // 2023/12/14 16:20:10
+```
+
+
+
+
+
+## 1.0.0 版本弃用且删除
+
+### isDecimalLenAll() [废弃]
+
+判断多个数字后有效小数长度是否在指定范围内
+
+例如: 
+
+1.00000 有效小数长度为 0
+
+1.00200 有效小数长度为 3
+
+1.00123 有效小数长度为 5
+
+
+
+**接收参数:**
+
+有效数值 (`NaN` , `Infinity` , `-Infinity` 不被视为有效数值)
+
+接收三个参数: isDecimalLen(numArr, min, max)
+
+- numArr 有效的数值数组
+- min 有效小数最小长度
+- max 有效小数最大长度
+
+
+
+**返回值:**
+
+类型: boolean
+
+数组内所有数字有效小数长度都在指定范围内时返回 true, 只要有一个为通过测试则返回 false
+
+
+
+**示例:**
+
+```js
+isDecimalLenAll([1.1, 1.0000], 0, 1) // true
+isDecimalLenAll([1.00000000, 2], 0, 2) // true
+isDecimalLenAll([1.00000001], 0, 2) // false
+```
+
+
+
+
+
+### convertTimer() [废弃]
 
 **已废弃, 请使用 formatDate() 或更加专业的库替代处理时间**
 
@@ -610,34 +648,5 @@ sayFn1() // 111 300 毫秒内只输出1次
 ```js
 convertTimer(new Date()) // 2023-10-30 22:23:00
 convertTimer(Date.now()) // 2023-10-30 22:23:00
-```
-
-
-
-## formatDate()
-
-格式化一个 "日期" 为一个可读时间(本地时间), 更复杂的时间处理请使用专业的库
-
-**接收参数:** formatDate(time, format, isMillisecond)
-
-- time {string|number|Date} 一个符合时间格式的字符串或时间戳或时间对象
-- format {string} 格式化格式: YYYY-MM-DD HH:mm:ss (YYYY, MM, HH, mm, ss => 固定不可变)
-- isMillisecond {boolean} 是否显示毫秒数, 默认为 false [可选]
-
-
-
-**返回值:**
-
-类型: string
-
-格式化后的时间
-
-
-
-**示例:**
-
-```js
-formatDate(new Date(), 'YYYY-MM-DD HH:mm:ss') // 2023-12-14 16:20:10
-formatDate(Date.now(), 'YYYY/MM/DD HH:mm:ss') // 2023/12/14 16:20:10
 ```
 
