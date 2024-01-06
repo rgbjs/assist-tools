@@ -1,9 +1,9 @@
 {
   "name": "assist-tools",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "一个辅助开发的工具方法集合",
-  "main": "/dist/index.js",
-  "types": "/dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "type": "module",
   "keywords": [
     "assist-tools",
