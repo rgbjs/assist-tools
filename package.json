@@ -1,8 +1,8 @@
 {
   "name": "assist-tools",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "description": "一个辅助开发的工具方法集合",
-  "main": "index.js",
+  "main": "/dist/index.js",
   "type": "module",
   "keywords": [
     "assist-tools",
@@ -10,5 +10,5 @@
     "utils"
   ],
   "author": "feiYu",
-  "license": "ISC"
+  "license": "MIT"
 }
