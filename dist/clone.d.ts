@@ -1,4 +1,4 @@
-type CloneFunc<T> = (newData: T, key: string | number, value: any) => void;
+type CloneFunc<T> = (newData: T, key: string, value: any) => void;
 interface DataObject {
     [key: string]: any;
 }
