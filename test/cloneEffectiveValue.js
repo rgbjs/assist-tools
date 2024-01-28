@@ -1,4 +1,4 @@
-import { cloneEffectiveValue, isEffectiveValue } from '../dist/index.js'
+import { cloneEffectiveValue } from '../dist/index.js'
 
 const obj = {
     num: 1,
@@ -27,6 +27,7 @@ const obj = {
         num: 1,
         str: '123',
         bool: true,
+        bool2: false,
         bigInt: BigInt(123),
         undefined: undefined,
         null: null,
@@ -41,11 +42,5 @@ const obj = {
     }
 }
 
-// const objData = cloneEffectiveValue(obj)
-// console.log('去除所有无效值 => ', objData)
-
-
-// const controlObjData = cloneEffectiveValue(obj, (value) => {
-//     if (isEffectiveValue(value) || value === null) return true
-// })
-// console.log('控制去除 => ', controlObjData) // 保留 null
+const objData = cloneEffectiveValue(obj)
+console.log('去除所有无效值 => ', objData)

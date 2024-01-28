@@ -390,7 +390,7 @@ isEffectiveValue(null, '', undefined, NaN) // false
 
 ## isTest()
 
-判断一个对象/数组/函数上的所有属性值是否都通过测试
+判断一个对象/数组/函数上的所有属性值是否都通过测试(浅层判断)
 
 
 
@@ -432,7 +432,7 @@ isTest({a: 1, b: 2, c: 3, d: -1, e: -2}, (value, key) => value > 0, ['d', 'e']) 
 
 ## notEmpty()
 
-判断一个对象/数组/函数上的所有属性值是否都都为有效值
+判断一个对象/数组/函数上的所有属性值是否都都为有效值(浅层判断)
 
 `''`, `null`, `undefined`, `NaN`, `Infinity`, `-Infinity` 被视为无效值
 
@@ -463,46 +463,6 @@ isTest({a: 1, b: 2, c: 3, d: -1, e: -2}, (value, key) => value > 0, ['d', 'e']) 
 notEmpty({a: 1, b: 'a', c: false}) // true
 notEmpty({a: 1, b: 'a', c: false, d: '', e: ''}, ['d', 'e']) // true
 notEmpty({a: 1, b: 'a', c: undefined, d: '', e: NaN, f: null}) // false
-```
-
-
-
-
-
-## clone()
-
-克隆一个对象/数组
-
-
-
-**接收参数:**
-
-接收三个参数: clone(data, deep, func)
-
-- data {object|array} 克隆的数据源
-- deep {boolean} 是否深度克隆(深拷贝) , 默认为 true [可选]
-- func {function} 控制器, 该参数为一个函数, 接收三个参数, 通过传递该参数可以控制克隆行为 [可选]
-  - newData 克隆后的新对象/数组
-  - k 当前进行中的字段
-  - val 当前进行中的值
-
-当传入控制器函数时, 您需手动进行赋值操作
-
-
-
-**返回值:**
-
-类型: object/array(视传入的数据而定)
-
-
-
-**示例:**
-
-```js
-clone({a: [1, {b: 2}]}) // {a: [1, {b: 2}]}
-clone({a: [1, {b: 2}]}, true, (newData, k, val) => {
-    newData[k] = val // 手动执行赋值
-}) // {a: [1, {b: 2}]}
 ```
 
 
@@ -612,6 +572,52 @@ sayFn1() // 111 300 毫秒内只输出1次
 ```js
 formatDate(new Date(), 'YYYY-MM-DD HH:mm:ss') // 2023-12-14 16:20:10
 formatDate(Date.now(), 'YYYY/MM/DD HH:mm:ss') // 2023/12/14 16:20:10
+```
+
+
+
+
+
+## clone() [1.2.0废弃]
+
+由于设计缺陷, 该函数存在漏洞, 请放弃使用
+
+替代方案: 使用 lodash 中的 cloneDeep()
+
+
+
+克隆一个对象/数组
+
+
+
+**接收参数:**
+
+接收三个参数: clone(data, deep, func)
+
+- data {object|array} 克隆的数据源
+- deep {boolean} 是否深度克隆(深拷贝) , 默认为 true [可选]
+- func {function} 控制器, 该参数为一个函数, 接收三个参数, 通过传递该参数可以控制克隆行为 [可选]
+  - newData 克隆后的新对象/数组
+  - k 当前进行中的字段
+  - val 当前进行中的值
+
+当传入控制器函数时, 您需手动进行赋值操作
+
+
+
+**返回值:**
+
+类型: object/array(视传入的数据而定)
+
+
+
+**示例:**
+
+```js
+clone({a: [1, {b: 2}]}) // {a: [1, {b: 2}]}
+clone({a: [1, {b: 2}]}, true, (newData, k, val) => {
+    newData[k] = val // 手动执行赋值
+}) // {a: [1, {b: 2}]}
 ```
 
 
