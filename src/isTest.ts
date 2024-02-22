@@ -1,13 +1,13 @@
-import isType from "./isType"
+import isType from './isType'
 
 interface DataObject {
-    [key: string]: any
+	[key: string]: any
 }
 
 type Data = DataObject | any[] | Function
 
 interface TestFunc {
-    (value: any, key: string, data: Data): boolean
+	(value: any, key: string, data: Data): boolean
 }
 
 /**
@@ -18,16 +18,16 @@ interface TestFunc {
  * @returns 是否通过测试
  */
 const isTest = (data: Data, testFunc: TestFunc, notTestField: string[] = []): boolean => {
-    if (!(isType(data) === 'function' || isType(data) === 'object' || isType(data) === 'array')) {
-        throw new TypeError('data must be a "object" or "array" or "function"')
-    }
-    if (typeof testFunc !== 'function') throw new TypeError('testFunc must be a function')
-    if (isType(notTestField) !== 'array') throw new TypeError('notTestField must be a array')
-    for (let k in data) {
-        if (!data.hasOwnProperty(k) || notTestField.includes(k)) continue
-        if (!testFunc((data as DataObject)[k], k, data)) return false
-    }
-    return true
+	if (!(isType(data) === 'function' || isType(data) === 'object' || isType(data) === 'array')) {
+		throw new TypeError('data must be a "object" or "array" or "function"')
+	}
+	if (typeof testFunc !== 'function') throw new TypeError('testFunc must be a function')
+	if (isType(notTestField) !== 'array') throw new TypeError('notTestField must be a array')
+	for (let k in data) {
+		if (!Object.prototype.hasOwnProperty.call(data, k) || notTestField.includes(k)) continue
+		if (!testFunc((data as DataObject)[k], k, data)) return false
+	}
+	return true
 }
 
 export default isTest
