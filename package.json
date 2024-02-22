@@ -1,15 +1,20 @@
 {
-  "name": "assist-tools",
-  "version": "1.2.0",
-  "description": "一个辅助开发的工具方法集合",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "type": "module",
-  "keywords": [
-    "assist-tools",
-    "tools",
-    "utils"
-  ],
-  "author": "feiYu",
-  "license": "MIT"
+	"name": "vite-dev",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc -d && vite build && npm run build:types",
+		"build:types": "tsc -d",
+		"preview": "vite preview"
+	},
+	"devDependencies": {
+		"@types/lodash-es": "^4.17.12",
+		"typescript": "^5.3.3",
+		"vite": "^5.1.0"
+	},
+	"dependencies": {
+		"lodash-es": "^4.17.21"
+	}
 }

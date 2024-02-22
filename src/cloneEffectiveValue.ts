@@ -1,31 +1,30 @@
-import clonedeepwith from '../lib/lodash/clonedeepwith.js'
-import isEffectiveValue from "./isEffectiveValue.js"
-import isType from "./isType.js"
+import { cloneDeepWith } from 'lodash-es'
+import isEffectiveValue from './isEffectiveValue'
+import isType from './isType'
 
 type Data = object | any[]
 
 const createFilter = (condition: (value: any) => boolean) => {
-    const filter = (value: any) => {
-        if (isType(value) === 'array') {
-            return value.filter((item: any) => {
-                const type = isType(item)
-                if (type === 'array' || type === 'object') {
-                    item = filter(item)
-                }
-                return condition(item)
-            })
-        }
-        if (isType(value) === 'object') {
-            for (const k in value) {
-                if (!condition(value[k])) {
-                    delete value[k]
-                }
-            }
-        }
-    }
-    return filter
+	const filter = (value: any) => {
+		if (isType(value) === 'array') {
+			return value.filter((item: any) => {
+				const type = isType(item)
+				if (type === 'array' || type === 'object') {
+					item = filter(item)
+				}
+				return condition(item)
+			})
+		}
+		if (isType(value) === 'object') {
+			for (const k in value) {
+				if (!condition(value[k])) {
+					delete value[k]
+				}
+			}
+		}
+	}
+	return filter
 }
-
 
 /**
  * 获取数组或对象内的所有有效数据, 该方法是深拷贝, ('', null, undefined, NaN, Infinity, -Infinity 被视为无效值), 可通过传递 condition 参数改变行为
@@ -34,7 +33,7 @@ const createFilter = (condition: (value: any) => boolean) => {
  * @returns 过滤后的数据
  */
 const cloneEffectiveValue = <T extends Data>(data: T, condition = isEffectiveValue): T => {
-    return clonedeepwith(data, createFilter(condition))
+	return cloneDeepWith(data, createFilter(condition))
 }
 
 export default cloneEffectiveValue

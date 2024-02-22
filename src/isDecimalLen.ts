@@ -1,4 +1,4 @@
-import isNum from "./isNum.js"
+import isNum from "./isNum"
 
 /**
  * 判断数字小数点后小数有效长度是否在指定范围内(有效长度: 末尾 0 将被忽略)

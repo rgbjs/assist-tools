@@ -1,4 +1,4 @@
-import isNum from './isNum.js'
+import isNum from './isNum'
 
 /**
  * 判断传入的数据是否为有效的数字或数字字符串

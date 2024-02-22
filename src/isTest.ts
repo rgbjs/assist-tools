@@ -1,4 +1,4 @@
-import isType from "./isType.js"
+import isType from "./isType"
 
 interface DataObject {
     [key: string]: any

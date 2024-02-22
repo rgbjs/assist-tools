@@ -1,5 +1,5 @@
-import isEffectiveValue from "./isEffectiveValue.js"
-import isTest from "./isTest.js"
+import isEffectiveValue from "./isEffectiveValue"
+import isTest from "./isTest"
 
 interface DataObject {
     [key: string]: any

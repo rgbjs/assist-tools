@@ -1,4 +1,4 @@
-import isPositiveInt from './isPositiveInt.js'
+import isPositiveInt from './isPositiveInt'
 
 /**
  * 判断数据是否为 id , 即大于 0 的正整数 (该方法是 isPositiveInt 的别名) , 由于语言特性 1.0 这类数字也会被判断为整数

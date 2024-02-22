@@ -1,4 +1,4 @@
-import isType from "./isType.js"
+import isType from "./isType"
 
 type CloneFunc<T> = (newData: T, key: string, value: any) => void
 

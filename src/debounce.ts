@@ -1,4 +1,4 @@
-import isNum from "./isNum.js"
+import isNum from "./isNum"
 
 /**
  * 函数防抖
