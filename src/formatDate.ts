@@ -10,31 +10,33 @@ type Time = string | number | Date
  * @returns 格式化后的时间
  */
 const formatDate = (time: Time, format: string = 'YYYY-MM-DD HH:mm:ss', isMillisecond: boolean = false): string => {
-    let date
-    if (time instanceof Date) {
-        date = time
-    } else {
-        date = new Date(time)
-    }
-    if (date.toString() === 'Invalid Date') {
-        throw new TypeError('"time" cannot be converted to a Date object')
-    }
+	let date
+	if (time instanceof Date) {
+		date = time
+	} else {
+		date = new Date(time)
+	}
+	if (Number.isNaN(date.getTime())) {
+		throw new TypeError('"time" cannot be converted to a Date object')
+	}
 
-    const year = String(date.getFullYear()).padStart(4, '0')
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const hour = String(date.getHours()).padStart(2, '0')
-    const minute = String(date.getMinutes()).padStart(2, '0')
-    const second = String(date.getSeconds()).padStart(2, '0')
-    let millisecond: number | string = ''
-    if (isMillisecond) millisecond = date.getMilliseconds()
-    return format.replace('YYYY', year)
-        .replace('MM', month)
-        .replace('DD', day)
-        .replace('HH', hour)
-        .replace('mm', minute)
-        .replace('ss', second)
-        + millisecond
+	const year = String(date.getFullYear()).padStart(4, '0')
+	const month = String(date.getMonth() + 1).padStart(2, '0')
+	const day = String(date.getDate()).padStart(2, '0')
+	const hour = String(date.getHours()).padStart(2, '0')
+	const minute = String(date.getMinutes()).padStart(2, '0')
+	const second = String(date.getSeconds()).padStart(2, '0')
+	let millisecond: number | string = ''
+	if (isMillisecond) millisecond = date.getMilliseconds()
+	return (
+		format
+			.replace('YYYY', year)
+			.replace('MM', month)
+			.replace('DD', day)
+			.replace('HH', hour)
+			.replace('mm', minute)
+			.replace('ss', second) + millisecond
+	)
 }
 
 export default formatDate
