@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
+		"test": "vite --config ./vite.test.config.ts",
 		"build": "tsc -d && vite build && npm run build:types",
 		"build:types": "tsc -d",
 		"preview": "vite preview"
