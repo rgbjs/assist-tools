@@ -5,10 +5,10 @@ export default defineConfig({
 		lib: {
 			entry: './src/main.ts',
 			name: 'assistTools',
-			formats: ['es', 'cjs', 'umd', 'iife'],
-			fileName(format, entryName) {
-				return `${entryName}.${format}.js`
-			}
+			// formats: ['es', 'cjs', 'umd', 'iife'],
+			// fileName(format, entryName) {
+			// 	return `${entryName}.${format}.js`
+			// }
 		}
 	}
 })

@@ -1,9 +1,9 @@
-import isType from "./isType"
+import isType from './isType'
 
 type CloneFunc<T> = (newData: T, key: string, value: any) => void
 
 interface DataObject {
-    [key: string]: any
+	[key: string]: any
 }
 
 type Data = DataObject | any[]
@@ -17,47 +17,57 @@ type Data = DataObject | any[]
  * @returns 克隆后的结果
  */
 const clone = <T extends Data>(
-    data: T,
-    deep: boolean = true,
-    func: CloneFunc<T> = (newData, key, value) => { newData[key] = value }
+	data: T,
+	deep: boolean = true,
+	// @ts-ignore
+	func: CloneFunc<T> = (newData, key, value) => {
+        // @ts-ignore
+		newData[key] = value
+	}
 ): T => {
-    const type = isType(data)
+	const type = isType(data)
 
-    if (!(type === 'object' || type === 'array')) throw new TypeError('data must be a object or array')
-    if (typeof deep !== 'boolean') throw new TypeError('"deep" must be a boolean or undefined')
-    if (typeof func !== 'function') throw new TypeError('"func" must be a function or undefined')
+	if (!(type === 'object' || type === 'array')) throw new TypeError('data must be a object or array')
+	if (typeof deep !== 'boolean') throw new TypeError('"deep" must be a boolean or undefined')
+	if (typeof func !== 'function') throw new TypeError('"func" must be a function or undefined')
 
-    if (deep === false) {
-        const newData = type === 'object' ? {} : []
-        for (let k in data) {
-            if (!data.hasOwnProperty(k)) continue
-            const val = data[k]
-            func(newData, k, val)
-        }
-        return newData
-    }
+	if (deep === false) {
+		const newData = type === 'object' ? {} : []
+		for (let k in data) {
+			if (!data.hasOwnProperty(k)) continue
+			const val = data[k]
+			// @ts-ignore
+			func(newData, k, val)
+		}
+		// @ts-ignore
+		return newData
+	}
 
-    const map = new WeakMap()
-    const deepClone = (data: any) => {
-        const type = isType(data)
-        const newData = type === 'object' ? {} : []
-        for (let k in data) {
-            if (!data.hasOwnProperty(k)) continue
-            const val = data[k]
-            if (isType(val) === 'object' || isType(val) === 'array') {
-                if (map.has(val)) {
-                    func(newData, k, val)
-                } else {
-                    map.set(val, 1)
-                    func(newData, k, deepClone(val))
-                }
-            } else {
-                func(newData, k, val)
-            }
-        }
-        return newData
-    }
-    return deepClone(data)
+	const map = new WeakMap()
+	const deepClone = (data: any) => {
+		const type = isType(data)
+		const newData = type === 'object' ? {} : []
+		for (let k in data) {
+			if (!data.hasOwnProperty(k)) continue
+			const val = data[k]
+			if (isType(val) === 'object' || isType(val) === 'array') {
+				if (map.has(val)) {
+					// @ts-ignore
+					func(newData, k, val)
+				} else {
+					map.set(val, 1)
+					// @ts-ignore
+					func(newData, k, deepClone(val))
+				}
+			} else {
+				// @ts-ignore
+				func(newData, k, val)
+			}
+		}
+		return newData
+	}
+	// @ts-ignore
+	return deepClone(data)
 }
 
 export default clone
