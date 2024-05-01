@@ -1,5 +1,5 @@
-import isEffectiveValue from "./isEffectiveValue";
-import isTest from "./isTest";
+import isEffectiveValue from './isEffectiveValue';
+import isTest from './isTest';
 /**
  * 判断一个对象/数组/函数上的所有属性值中是否都为有效值(浅层判断), ('', null, undefined, NaN, Infinity, -Infinity 被视为无效值)
  * @param data 用于测试的对象

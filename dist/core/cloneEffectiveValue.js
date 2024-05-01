@@ -1,7 +1,7 @@
 import { cloneDeepWith } from 'lodash-es';
 import isEffectiveValue from './isEffectiveValue';
 import isType from './isType';
-const createFilter = (condition) => {
+const createFilter = (condition, dataType) => {
     const filter = (value) => {
         if (isType(value) === 'array') {
             return value.filter((item) => {
@@ -12,12 +12,18 @@ const createFilter = (condition) => {
                 return condition(item);
             });
         }
-        if (isType(value) === 'object') {
+        else if (isType(value) === 'object') {
             for (const k in value) {
                 if (!condition(value[k])) {
                     delete value[k];
                 }
             }
+            if (dataType === 'array') {
+                return value;
+            }
+        }
+        else {
+            return value;
         }
     };
     return filter;
@@ -29,6 +35,7 @@ const createFilter = (condition) => {
  * @returns 过滤后的数据
  */
 const cloneEffectiveValue = (data, condition = isEffectiveValue) => {
-    return cloneDeepWith(data, createFilter(condition));
+    const type = isType(data);
+    return cloneDeepWith(data, createFilter(condition, type));
 };
 export default cloneEffectiveValue;

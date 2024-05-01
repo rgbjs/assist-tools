@@ -1,4 +1,6 @@
-type Data = object | any[];
+interface Data {
+    [key: string | number | symbol]: any;
+}
 /**
  * 获取数组或对象内的所有有效数据, 该方法是深拷贝, ('', null, undefined, NaN, Infinity, -Infinity 被视为无效值), 可通过传递 condition 参数改变行为
  * @param data 需要过滤的数据
