@@ -537,6 +537,8 @@ formatDate(Date.now(), 'YYYY/MM/DD hh:mm:ss') // 2023/12/14 16:20:10
 
 将一个引用数据类型包装为只读数据
 
+**配置选项在2.1.1中引入, 小于此版本仅允许使用简写形式**
+
 **接收参数:** readOnly(data [, options | ])
 
 -   data {Object|Array|Function} 需要包装为只读数据的引用数据 @param options 配置选型
@@ -588,7 +590,7 @@ const result1 = isReadOnly(newObj) // true
 const result2 = isReadOnly({}) // false
 ```
 
-## cloneReadOnlyData() [2.1.0 新增]
+## cloneReadOnlyData() [2.1.1 新增]
 
 克隆指定的只读数据
 
@@ -612,7 +614,7 @@ result === obj // false
 result === newObj // false
 ```
 
-## unReadOnly() [2.1.0 新增]
+## unReadOnly() [2.1.1 新增]
 
 解除只读包装
 
