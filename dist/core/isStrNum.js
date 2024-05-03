@@ -14,22 +14,19 @@ const isStrNum = (str, strict = true) => {
     const type = typeof str;
     if (!(type === 'number' || type === 'string'))
         return false;
+    // 为数字
     if (type === 'number') {
-        if (isNum(str)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return isNum(str);
     }
-    if (str === '')
+    if (str.trim() === '')
         return false;
+    // 为字符串, 且开启严格模式
     if (strict) {
         const reg1 = /\s/g;
         if (reg1.test(str))
             return false;
         if (str.includes('.')) {
-            const start = str.substr(0, 2);
+            const start = str.substring(0, 2);
             if (start === '00')
                 return false;
             const reg2 = /[0-9]\.[0-9]/;
@@ -44,8 +41,7 @@ const isStrNum = (str, strict = true) => {
             }
         }
     }
-    if (isNum(Number(str)))
-        return true;
-    return false;
+    // 普通模式
+    return isNum(Number(str));
 };
 export default isStrNum;

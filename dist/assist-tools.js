@@ -629,19 +629,19 @@ const et = (...t) => t.length === 0 ? !1 : t.every((e) => !(e === "" || e === nu
   if (!(r === "number" || r === "string"))
     return !1;
   if (r === "number")
-    return !!E(t);
-  if (t === "")
+    return E(t);
+  if (t.trim() === "")
     return !1;
   if (e) {
     if (/\s/g.test(t))
       return !1;
     if (t.includes(".")) {
-      if (t.substr(0, 2) === "00" || !/[0-9]\.[0-9]/.test(t))
+      if (t.substring(0, 2) === "00" || !/[0-9]\.[0-9]/.test(t))
         return !1;
     } else if (t.length > 1 && t[0] === "0")
       return !1;
   }
-  return !!E(Number(t));
+  return E(Number(t));
 }, Mo = (t, e = []) => {
   for (let r in t) {
     if (!Object.prototype.hasOwnProperty.call(t, r) || e.includes(r))

@@ -12,5 +12,5 @@ interface TestFunc<T1, T2> {
  * @param notTestField 不进行测试的属性, 示例: ['a', 'b'] [可选]
  * @returns 是否通过测试
  */
-declare const isTest: <T1 extends Data, T2 extends T1>(data: T1, testFunc: TestFunc<T1, T2>, notTestField?: (keyof T2)[]) => boolean;
+declare const isTest: <T1 extends Data, T2 extends T1>(data: T1, testFunc: TestFunc<T1, T2>, notTestField?: string[] | (keyof T2)[]) => boolean;
 export default isTest;

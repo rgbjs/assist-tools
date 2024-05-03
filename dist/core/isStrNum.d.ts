@@ -9,5 +9,5 @@
  * - 不允许省略的形式的数字字符串, 例如: '.1' 和 '1.' 不被允许, 数字类型忽略该条规则, 因为数字在使用时会自动补全 0
  * - 字符串不允许以无效的多个 0 开头, 例如: 000001 , 数字类型无视该条规则, 因为数字在使用时会自动舍弃无效的 0
  */
-declare const isStrNum: (str: any, strict?: boolean) => boolean;
+declare const isStrNum: (str: unknown, strict?: boolean) => boolean;
 export default isStrNum;
