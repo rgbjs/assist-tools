@@ -6,7 +6,8 @@ export default defineConfig({
 		lib: {
 			entry: './src/main.ts',
 			name: 'assistTools',
-			formats: ['es']
+			formats: ['es'],
+			fileName: 'main.es'
 		}
 	}
 })
