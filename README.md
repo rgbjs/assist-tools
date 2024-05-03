@@ -33,7 +33,11 @@ console.log(isType(10)) // 'number'
 
 **接收参数:**
 
-接收任何数据
+一个或多个参数
+
+isType(param [, ...paramN])
+
+- param 任何数据
 
 **返回值:**
 
@@ -66,6 +70,10 @@ isType(new RegExp()) // 'object'
 
 一个或多个参数
 
+isNumber(param [, ...paramN])
+
+- param 任何数据
+
 **返回值:**
 
 类型: boolean
@@ -87,6 +95,10 @@ isNumber(1, 'a') // false
 **接收参数:**
 
 一个或多个参数
+
+isString(param [, ...paramN])
+
+- param 任何数据
 
 **返回值:**
 
@@ -112,6 +124,10 @@ isString('a', 1) // false
 
 一个或多个参数
 
+isNum(param [, ...paramN])
+
+- param 任何数据
+
 **返回值:**
 
 类型: boolean
@@ -130,11 +146,13 @@ isNum(1, 'a') // false
 
 判断传入的数据是否为有效的数字或数字字符串
 
-`NaN` , `Infinity` , `-Infinity` 被视为无效数值
-
-`''` `' '` 空串和空字符串被视为无效字符串
+`NaN` , `Infinity` , `-Infinity` 被视为无效数值(即 false)
 
 `BigInt` 类型被视为 false
+
+`' '` 空白字字符被视为 false
+
+`''` 空串被视为 false
 
 **接收参数:**
 
@@ -156,9 +174,50 @@ isStrNum(str [, strict])
 **示例:**
 
 ```js
-isStrNum(1) // true
-isStrNum('1') // true
+// 严格模式和普通模式都为 false
+isStrNum('') // false
+isStrNum('', false) // false
+isStrNum('   ') // false
+isStrNum('   ', false) // false
+isStrNum(NaN) // false
+isStrNum(NaN, false) // false
+isStrNum(Infinity) // false
+isStrNum(Infinity, false) // false
+isStrNum(-Infinity) // false
+isStrNum(-Infinity, false) // false
+
+// 非严格模式(普通模式)
+isStrNum('1', false) // true
+isStrNum('0', false) // true
+isStrNum('-0', false) // true
+isStrNum('-1', false) // true
+isStrNum('-1.1', false) // true
+isStrNum('1.1', false) // true
+isStrNum('1.1000', false) // true
+isStrNum('   1.1000', false) // true
+isStrNum('1.1000   ', false) // true
+isStrNum('   1.1000   ', false) // true
+isStrNum('   1.   ', false) // true
+isStrNum('   .1   ', false) // true
+isStrNum('   .0   ', false) // true
+isStrNum('0b10', false) // true
+
+// 严格模式
+isStrNum('  1') // false
+isStrNum('1  ') // false
+isStrNum('  1  ') // false
+isStrNum('   -0') // false
+isStrNum('.1') // false
 isStrNum('1.') // false
+isStrNum('') // false
+isStrNum('a') // false
+isStrNum('00') // false
+isStrNum('.0') // false
+isStrNum('0.') // false
+isStrNum('-0.') // false
+isStrNum('-') // false
+isStrNum('+') // false
+isStrNum('0b10') // false
 ```
 
 ## isInt()
@@ -170,6 +229,10 @@ isStrNum('1.') // false
 **接收参数:**
 
 一个或多个参数
+
+isInt(param [, ...paramN])
+
+- param 任何数据
 
 **返回值:**
 
@@ -196,6 +259,10 @@ isInt(1, 'a') // false
 **接收参数:**
 
 一个或多个参数
+
+isPositiveInt(param [, ...paramN])
+
+- param 任何数据
 
 **返回值:**
 
@@ -272,6 +339,10 @@ isDecimalLen(1.00000001, 0, 2) // false
 
 一个或多个参数
 
+isEffectiveValue(param [, ...paramN])
+
+- param 任何数据
+
 **返回值:**
 
 类型: boolean
@@ -292,7 +363,7 @@ isEffectiveValue(null, '', undefined, NaN) // false
 
 **接收参数:**
 
-接收三个参数: isTest(data, testFunc, notTestField)
+接收三个参数: isTest(data, testFunc [, notTestField])
 
 -   data 测试的数据源
 -   testFunc 用于测试的函数, 该函数会接收到三个参数
@@ -328,7 +399,7 @@ isTest({ a: 1, b: 2, c: 3, d: -1, e: -2 }, (value, key) => value > 0, ['d', 'e']
 
 **接收参数:**
 
-接收三个参数: notEmpty(data, notTestField)
+接收三个参数: notEmpty(data [, notTestField])
 
 -   data 测试的数据源
 -   notTestField 忽略测试的字段集合, 该字段传递一个数组 [可选]
@@ -337,7 +408,7 @@ isTest({ a: 1, b: 2, c: 3, d: -1, e: -2 }, (value, key) => value > 0, ['d', 'e']
 
 类型: boolean
 
-对象/数组/函数上的所有属性值都为有效值则为 true, 只要有一个为无效值则返回 false
+判断其身上所有属性值是否为有效值(可遍历的, 且不包括原型)
 
 **示例:**
 
@@ -357,7 +428,7 @@ notEmpty({ a: 1, b: 'a', c: undefined, d: '', e: NaN, f: null }) // false
 
 **接收参数:**
 
-接收三个参数: notEmptyDeep(data, notTestField)
+接收两个参数: notEmptyDeep(data [, notTestField])
 
 -   data 测试的数据源
 -   notTestField 忽略测试的字段集合, 该字段传递一个数组 [可选]
@@ -366,7 +437,7 @@ notEmpty({ a: 1, b: 'a', c: undefined, d: '', e: NaN, f: null }) // false
 
 类型: boolean
 
-对象/数组/函数上的所有属性值都为有效值则为 true, 只要有一个为无效值则返回 false
+判断其身上所有属性值是否为有效值(可遍历的, 且不包括原型)
 
 **示例:**
 
@@ -384,7 +455,7 @@ notEmptyDeep({ a: 1, b: 'a', c: { d: '' } }) // false
 
 **接收参数:**
 
-接收三个参数: cloneEffectiveValue(data, condition)
+接收两个参数: cloneEffectiveValue(data [, condition])
 
 -   data 克隆的数据源
 -   condition {function} 控制器, 该参数为一个函数, 接收一个参数, 通过传递该参数可以控制是否克隆的行为 [可选]
@@ -409,7 +480,7 @@ cloneEffectiveValue({ a: [1, { b: 2, c: null, d: '' }] }, (val) => {
 
 函数防抖, 传入一个函数返回包装后的防抖函数
 
-**接收参数:** debounce(callback, delay)
+**接收参数:** debounce(callback [, delay])
 
 -   callback {function} 需要防抖的函数
 -   delay {number} 防抖的时长(单位/毫秒), 默认为 200 [可选]
@@ -439,7 +510,7 @@ sayFn1() // 111 300 毫秒内只输出1次
 
 格式化一个 "日期" 为一个可读时间(本地时间), 更复杂的时间处理请使用专业的库
 
-**接收参数:** formatDate(time, format, isMillisecond)
+**接收参数:** formatDate(time [, format [, isMillisecond]])
 
 -   time {string|number|Date} 一个符合时间格式的字符串或时间戳或时间对象
 
@@ -466,7 +537,7 @@ formatDate(Date.now(), 'YYYY/MM/DD hh:mm:ss') // 2023/12/14 16:20:10
 
 将一个引用数据类型包装为只读数据
 
-**接收参数:** readOnly(data, mode)
+**接收参数:** readOnly(data [, mode])
 
 -   data {Object|Array|Function} 需要包装为只读数据的引用数据
 -   mode {'strict' | 'default' | 'looseFitting'} 模式, 默认值为 'default' [可选]
