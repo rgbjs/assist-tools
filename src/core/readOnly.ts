@@ -156,7 +156,7 @@ export const cloneReadOnlyData = <T extends TAnyObj>(target: T): T => {
 export const unReadOnly = <T extends TAnyObj>(target: T): T => {
 	const type = isType(target)
 	if (!quoteData.includes(type)) return target
-	const result: T = target[cloneSign]
+	const result: T = target[unSign]
 	if (isReadOnly(result)) {
 		return unReadOnly(result)
 	}

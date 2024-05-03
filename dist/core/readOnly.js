@@ -130,7 +130,7 @@ export const unReadOnly = (target) => {
     const type = isType(target);
     if (!quoteData.includes(type))
         return target;
-    const result = target[cloneSign];
+    const result = target[unSign];
     if (isReadOnly(result)) {
         return unReadOnly(result);
     }
