@@ -29,6 +29,8 @@ describe('notEmpty', () => {
 			])
 		).toBe(true)
 
+		expect(notEmpty([1, 2])).toBe(true)
+
 		expect(
 			notEmpty({
 				age: 0
