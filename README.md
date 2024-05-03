@@ -37,7 +37,7 @@ console.log(isType(10)) // 'number'
 
 isType(param [, ...paramN])
 
-- param 任何数据
+-   param 任何数据
 
 **返回值:**
 
@@ -72,7 +72,7 @@ isType(new RegExp()) // 'object'
 
 isNumber(param [, ...paramN])
 
-- param 任何数据
+-   param 任何数据
 
 **返回值:**
 
@@ -98,7 +98,7 @@ isNumber(1, 'a') // false
 
 isString(param [, ...paramN])
 
-- param 任何数据
+-   param 任何数据
 
 **返回值:**
 
@@ -126,7 +126,7 @@ isString('a', 1) // false
 
 isNum(param [, ...paramN])
 
-- param 任何数据
+-   param 任何数据
 
 **返回值:**
 
@@ -232,7 +232,7 @@ isStrNum('0b10') // false
 
 isInt(param [, ...paramN])
 
-- param 任何数据
+-   param 任何数据
 
 **返回值:**
 
@@ -262,7 +262,7 @@ isInt(1, 'a') // false
 
 isPositiveInt(param [, ...paramN])
 
-- param 任何数据
+-   param 任何数据
 
 **返回值:**
 
@@ -341,7 +341,7 @@ isDecimalLen(1.00000001, 0, 2) // false
 
 isEffectiveValue(param [, ...paramN])
 
-- param 任何数据
+-   param 任何数据
 
 **返回值:**
 
@@ -537,14 +537,21 @@ formatDate(Date.now(), 'YYYY/MM/DD hh:mm:ss') // 2023/12/14 16:20:10
 
 将一个引用数据类型包装为只读数据
 
-**接收参数:** readOnly(data [, mode])
+**接收参数:** readOnly(data [, options | ])
 
--   data {Object|Array|Function} 需要包装为只读数据的引用数据
--   mode {'strict' | 'default' | 'looseFitting'} 模式, 默认值为 'default' [可选]
+-   data {Object|Array|Function} 需要包装为只读数据的引用数据 @param options 配置选型
+-   options 配置选项
+-   可直接传递 'strict' | 'default' | 'looseFitting' 简写形式(简写 mode)
+-   **options.mode** 模式 , 默认为 default [可选]
+
     -   strict 严格模式, 禁止函数调用(防止产生副作用)
     -   default 默认模式, 允许函数调用, 但禁止内部通过 this 来修改数据
     -   looseFitting 开放模式, 允许函数调用, 允许所有副作用产生
-    -   自定义模式 传递一个函数, 接收参数 target: 目标函数 thisArg: 绑定的 this argArray: 传递的参数列表
+    -   自定义模式 传递一个函数, 接收参数 target: 目标函数 thisArg: 绑定的 this argArray: 传递的参数列表, 返回 true / false 来决定是否允许调用
+
+-   **options.unReadOnly** 是否允许 unReadOnly 解包, 默认为 false
+
+-   **options.repeatReadOnly** 是否允许重复包装为只读对象, 即当 readOnly 遇到的数据已经是一个只读数据了, 是否允许再包装多层, true 允许, false 不允许, 直接返回已包装对象, 默认为 false
 
 **返回值:**
 
@@ -579,4 +586,52 @@ const newArr = readOnly([1, 2])
 const newObj = readOnly({ a: 1, b: 2 })
 const result1 = isReadOnly(newObj) // true
 const result2 = isReadOnly({}) // false
+```
+
+## cloneReadOnlyData() [2.1.0 新增]
+
+克隆指定的只读数据
+
+**接收参数:** cloneReadOnlyData(data)
+
+-   data {any} 需要克隆的只读数据
+
+**返回值:**
+
+类型: 视传入数据而定
+
+返回一个新的未包装的新数据
+
+**示例:**
+
+```js
+const obj = { a: 1, b: 2 }
+const newObj = readOnly(obj)
+const result = cloneReadOnlyData(newObj) // { a: 1, b: 2 } 一个新的数据
+result === obj // false
+result === newObj // false
+```
+
+## unReadOnly() [2.1.0 新增]
+
+解除只读包装
+
+**接收参数:** unReadOnly(data)
+
+-   data {any} 需要解除的只读对象, 必须 readOnly 中配置选项 options.unReadOnly 为 true, 否则将抛出错误
+
+**返回值:**
+
+类型: 视传入数据而定
+
+返回原始的未包装的数据
+
+**示例:**
+
+```js
+const obj = { a: 1, b: 2 }
+const newObj = readOnly(obj)
+const result = unReadOnly(newObj) // { a: 1, b: 2 } 一个新的数据
+result === newObj // false
+result === obj // true
 ```
