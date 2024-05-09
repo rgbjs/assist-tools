@@ -1,3 +1,9 @@
+## 2.x.x 以下版本请使用旧版文档
+
+```url
+https://github.com/rgbjs/assist-tools/tree/1.2.1
+```
+
 ## 使用
 
 **安装:**
@@ -517,7 +523,7 @@ sayFn1() // 111 300 毫秒内只输出1次
     -   不符合条件的将抛出 TypeError
     -   如果时间无法保证格式, 请使用 try catch 进行错误捕获, 以防止影响后续运行
 
--   format {string} 格式化格式: YYYY-MM-DD hh:mm:ss YYYY, MM, DD, hh, mm, ss => 关键字将被替换, 默认为 'YYYY-MM-DD hh:mm:ss' [可选]
+-   format {string} YYYY, MM, DD, hh, mm, ss => 关键字将被替换, 默认为 'YYYY-MM-DD hh:mm:ss' [可选]
 -   isMillisecond {boolean} 是否显示毫秒数, 默认为 false [可选]
 
 **返回值:**
@@ -537,9 +543,9 @@ formatDate(Date.now(), 'YYYY/MM/DD hh:mm:ss') // 2023/12/14 16:20:10
 
 将一个引用数据类型包装为只读数据
 
-**配置选项在2.1.1中引入, 小于此版本仅允许使用简写形式**
+**配置选项在 2.1.1 中引入, 小于此版本仅允许使用简写形式**
 
-**接收参数:** readOnly(data [, options | ])
+**接收参数:** readOnly(data [, options | mode])
 
 -   data {Object|Array|Function} 需要包装为只读数据的引用数据 @param options 配置选型
 -   options 配置选项
@@ -632,7 +638,7 @@ result === newObj // false
 
 ```js
 const obj = { a: 1, b: 2 }
-const newObj = readOnly(obj)
+const newObj = readOnly(obj, { unReadOnly: true })
 const result = unReadOnly(newObj) // { a: 1, b: 2 } 一个新的数据
 result === newObj // false
 result === obj // true
