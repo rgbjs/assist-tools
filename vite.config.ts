@@ -18,12 +18,12 @@ export default defineConfig({
 
 	plugins: [
 		dts({
-			insertTypesEntry: true,
 			afterBuild(emittedFiles) {
 				const rootPath = path.resolve()
 				const reg = /\\/g
-				const p = path.join(rootPath, '/dist/main.es.d.ts').replace(reg, '/')
+				const p = path.join(rootPath, '/dist/main.d.ts').replace(reg, '/')
 				const content = emittedFiles.get(p) as string
+				fs.writeFileSync(path.join(rootPath, '/dist/main.es.d.ts'), content)
 				fs.writeFileSync(path.join(rootPath, '/dist/main.cjs.d.ts'), content)
 			}
 		})
