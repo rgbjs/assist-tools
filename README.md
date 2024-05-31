@@ -35,9 +35,7 @@ import { isType } from 'assist-tools'
 console.log(isType(10)) // 'number'
 ```
 
-通常情况下使用以上方式导入即可, 上述导入方式配合构建工具可以极大减少包体积
-某些情况下, 由于种种原因你需要一个较低的版本时你可以使用以下方式(最低支持至 es2015)
-注意: 该方式默认导入所有, tree shaking 支持较差
+通常情况下使用以上方式导入即可, 上述导入方式配合构建工具可以极大减少包体积某些情况下, 由于种种原因你需要一个较低的版本时你可以使用以下方式(最低支持至 es2015) 注意: 该方式默认导入所有, tree shaking 支持较差
 
 ```js
 import { isType } from 'assist-tools/dist/main.es.js'
@@ -554,12 +552,12 @@ formatDate(Date.now(), 'YYYY/MM/DD hh:mm:ss') // 2023/12/14 16:20:10
 
 将一个引用数据类型包装为只读数据
 
-**配置选项在 2.1.1 中引入, 小于此版本仅允许使用简写形式**
+**配置选项在 2.1.x 中引入, 小于此版本仅允许使用简写形式**
 
 **接收参数:** readOnly(data [, options | mode])
 
 -   data {Object|Array|Function} 需要包装为只读数据的引用数据 @param options 配置选型
--   options 配置选项
+-   options {Options | 'strict' | 'default' | 'looseFitting' } 配置选项
 -   可直接传递 'strict' | 'default' | 'looseFitting' 简写形式(简写 mode)
 -   **options.mode** 模式 , 默认为 default [可选]
 
@@ -571,6 +569,8 @@ formatDate(Date.now(), 'YYYY/MM/DD hh:mm:ss') // 2023/12/14 16:20:10
 -   **options.unReadOnly** 是否允许 unReadOnly 解包, 默认为 false
 
 -   **options.repeatReadOnly** 是否允许重复包装为只读对象, 即当 readOnly 遇到的数据已经是一个只读数据了, 是否允许再包装多层, true 允许, false 不允许, 直接返回已包装对象, 默认为 false
+
+-   **options.sign** 代理标识, 只有标识一致才可使用 unReadOnly() [可选] [2.2.x 新增]
 
 **返回值:**
 
@@ -609,17 +609,17 @@ const result2 = isReadOnly({}) // false
 
 ## cloneReadOnlyData() [2.1.1 新增]
 
-克隆指定的只读数据
+克隆指定的数据
 
 **接收参数:** cloneReadOnlyData(data)
 
--   data {any} 需要克隆的只读数据
+-   data {any} 需要克隆的数据
 
 **返回值:**
 
 类型: 视传入数据而定
 
-返回一个新的未包装的新数据
+返回一个新的数据
 
 **示例:**
 
@@ -631,13 +631,15 @@ result === obj // false
 result === newObj // false
 ```
 
-## unReadOnly() [2.1.1 新增]
+## unReadOnly() [2.1.x 新增]
 
 解除只读包装
 
-**接收参数:** unReadOnly(data)
+**接收参数:** unReadOnly(data [, sign])
 
 -   data {any} 需要解除的只读对象, 必须 readOnly 中配置选项 options.unReadOnly 为 true, 否则将抛出错误
+
+-   sign {any} 代理标识, 必须同 readOnly 中配置选项 options.sign 一致, 否则将抛出错误 [2.2.x 新增]
 
 **返回值:**
 
@@ -654,3 +656,42 @@ const result = unReadOnly(newObj) // { a: 1, b: 2 } 一个新的数据
 result === newObj // false
 result === obj // true
 ```
+
+## checkReadOnlySign() [2.2.x 新增]
+
+判断一个代理数据标识是否相等
+
+**接收参数:** checkReadOnlySign(data [, sign])
+
+-   target {any} 判断的目标
+
+-   sign {any} 判断的目标代理标识
+
+**返回值:**
+
+类型: boolean
+
+**示例:**
+
+```js
+const obj = { a: 1, b: 2 }
+const newObj = readOnly(obj, { sign: 'a' })
+checkReadOnlySign(newObj, 'a') // true
+checkReadOnlySign(newObj, 'b') // false
+```
+
+## cloneDeep() [2.2.x 新增]
+
+lodash 的 cloneDeep
+
+深度克隆
+
+使用请参考 lodash
+
+## cloneDeepWith() [2.2.x 新增]
+
+lodash 的 cloneDeepWith
+
+自定义深度克隆
+
+使用请参考 lodash

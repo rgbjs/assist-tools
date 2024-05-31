@@ -1,13 +1,12 @@
 import isType from './isType'
 import { cloneDeep } from 'lodash-es'
-
-interface TAnyObj {
+export interface TAnyObj {
 	[key: string | number | symbol]: any
 }
 
-type TMode<T> = 'strict' | 'default' | 'looseFitting' | ((target: T, thisArg: any, argArray: any[]) => boolean)
+export type TMode<T> = 'strict' | 'default' | 'looseFitting' | ((target: T, thisArg: any, argArray: any[]) => boolean)
 
-interface TOptions<T> {
+export interface TOptions<T> {
 	/**
 	 * 模式 , 默认为 default [可选]
 	 * - strict 严格模式, 禁止函数调用(防止产生副作用)
@@ -24,11 +23,16 @@ interface TOptions<T> {
 	 * 是否允许重复包装为只读对象, 即当 readOnly 遇到的数据已经是一个只读数据了, 是否允许再包装多层, true 允许, false 不允许, 直接返回已包装对象, 默认为 false
 	 */
 	repeatReadOnly?: boolean
+	/**
+	 * 代理标识, 只有标识一致才可使用 unReadOnly()
+	 */
+	sign?: any
 }
 
-const sign = Symbol('代理数据:只读')
-const cloneSign = Symbol('克隆数据')
-const unSign = Symbol('解除只读包装')
+const dataSign = Symbol('只读代理标识')
+const readOnlySign = Symbol('代理数据:只读')
+const unReadOnlySign = Symbol('解除只读代理包装')
+const cloneSign = Symbol('克隆数据只读代理数据')
 
 /**
  * 将一个引用数据类型包装为只读数据
@@ -43,37 +47,57 @@ const unSign = Symbol('解除只读包装')
  * 返回 true / false 来决定是否允许调用
  * - **options.unReadOnly** 是否允许 unReadOnly 解包, 默认为 false
  * - **options.repeatReadOnly** 是否允许重复包装为只读对象, 即当 readOnly 遇到的数据已经是一个只读数据了, 是否允许再包装多层, true 允许, false 不允许, 直接返回已包装对象, 默认为 false
+ * - **options.sign** 代理标识, 只有标识一致才可使用 unReadOnly() [可选]
  * @returns 返回一个只读的代理数据
  */
 export const readOnly = <T extends TAnyObj>(data: T, options: TOptions<T> | TMode<T> = 'default'): T => {
+	let config: TOptions<T> = {}
 	const type = isType(options)
 	if (type === 'string') {
-		options = {
+		verifyMode(options as TMode<T>)
+		config = {
 			mode: options as TMode<T>,
 			unReadOnly: false,
 			repeatReadOnly: false
 		}
 	} else if (type === 'object') {
-		if ((options as TOptions<T>).mode === void 0) {
-			;(options as TOptions<T>).mode = 'default'
+		let mode = (options as TOptions<T>).mode
+		if (mode === void 0) {
+			mode = 'default'
 		}
-		;(options as TOptions<T>).unReadOnly = !!(options as TOptions<T>).unReadOnly
-		;(options as TOptions<T>).repeatReadOnly = !!(options as TOptions<T>).repeatReadOnly
+		verifyMode(mode)
+		config.mode = mode
+		config.unReadOnly = !!(options as TOptions<T>).unReadOnly
+		config.repeatReadOnly = !!(options as TOptions<T>).repeatReadOnly
+		config.sign = (options as TOptions<T>).sign
 	} else {
 		throw new TypeError('"options" must be a string or object')
 	}
 
 	// 当遇到数据是已经是一个只读对象时
 	if (isReadOnly(data)) {
-		if (!(options as TOptions<T>).repeatReadOnly) return data
+		if (!config.repeatReadOnly) return data
 	}
 
 	return new Proxy(data, {
 		get(target: T, p: keyof T) {
-			if (p === sign) return sign
+			/**
+			 * 验证只读代理操作
+			 */
+			if (p === readOnlySign) return readOnlySign
+			/**
+			 * 验证代理标识操作
+			 */
+			if (p === dataSign) return config.sign
+			/**
+			 * 验证克隆数据操作
+			 */
 			if (p === cloneSign) return target
-			if (p === unSign) {
-				if ((options as TOptions<T>).unReadOnly) {
+			/**
+			 * 验证解包操作
+			 */
+			if (p === unReadOnlySign) {
+				if (config.unReadOnly) {
 					return target
 				} else {
 					throw new Error('The current data "options.unReadOnly" is false !')
@@ -82,7 +106,7 @@ export const readOnly = <T extends TAnyObj>(data: T, options: TOptions<T> | TMod
 
 			const type = isType(target[p])
 			if (type === 'function') {
-				if ((options as TOptions<T>).mode === 'default') return readOnly(target[p], options)
+				if (config.mode === 'default') return readOnly(target[p].bind(errorProxy), options)
 				return readOnly(target[p].bind(target), options)
 			} else if (type === 'object' || type === 'array') {
 				return readOnly(target[p], options)
@@ -102,15 +126,16 @@ export const readOnly = <T extends TAnyObj>(data: T, options: TOptions<T> | TMod
 		},
 
 		apply(target, thisArg, argArray) {
-			if ((options as TOptions<T>).mode === 'strict') {
-				console.warn(target, '"strict" mode prohibit calling functions !')
+			if (config.mode === 'strict') {
+				console.warn(
+					target,
+					'The current data configuration "options.mode" is "strict" , "strict" mode prohibit calling functions !'
+				)
 				return false
 			}
 
-			if (typeof (options as TOptions<T>).mode === 'function') {
-				// 此处已进入类型保护, 已能保证 options.mode 是一个函数
-				// @ts-ignore
-				if (!options.mode(target, thisArg, argArray)) {
+			if (typeof config.mode === 'function') {
+				if (!config.mode(target, thisArg, argArray)) {
 					return false
 				}
 			}
@@ -119,6 +144,40 @@ export const readOnly = <T extends TAnyObj>(data: T, options: TOptions<T> | TMod
 		}
 	})
 }
+
+/**
+ * 验证 mode 是否正确
+ */
+const verifyMode = (mode: 'strict' | 'default' | 'looseFitting' | Function) => {
+	const type = isType(mode)
+	const err = new TypeError('"options.mode" must be a "strict" | "default" | "looseFitting" | function !')
+	if (type === 'string') {
+		if (!['strict', 'default', 'looseFitting'].includes(mode as string)) {
+			throw err
+		}
+		return
+	}
+
+	if (type !== 'function') {
+		throw err
+	}
+}
+
+/**
+ * 拦截 default 模式下方法 this 操作
+ */
+const errorProxy = new Proxy(
+	{},
+	{
+		set<T>(_target: T, p: keyof T) {
+			console.warn(
+				p,
+				'The current data configuration "options.mode" is "default" , cannot be changed data through "this" !'
+			)
+			return true
+		}
+	}
+)
 
 const quoteData = ['object', 'array', 'function']
 
@@ -129,36 +188,45 @@ const quoteData = ['object', 'array', 'function']
 export const isReadOnly = <T extends TAnyObj>(target: T) => {
 	const type = isType(target)
 	if (!quoteData.includes(type)) return false
-	if (target[sign] !== sign) return false
+	if (target[readOnlySign] !== readOnlySign) return false
 	return true
 }
 
 /**
- * 克隆指定的只读数据
- * @param target 需要克隆的只读数据
- * @returns 返回一个新的未包装的新数据
+ * 判断一个代理数据标识是否相等
+ * @param target 判断的目标
+ * @param sign 判断的目标代理标识
  */
-export const cloneReadOnlyData = <T extends TAnyObj>(target: T): T => {
-	const type = isType(target)
-	if (!quoteData.includes(type)) return target
-	const result: T = target[cloneSign]
-	if (isReadOnly(result)) {
-		return cloneReadOnlyData(result)
-	}
-	return cloneDeep(result)
+export const checkReadOnlySign = <T extends TAnyObj>(target: T, sign: any): boolean => {
+	if (isReadOnly(target) === false) return false
+	return Object.is(target[dataSign], sign)
+}
+
+/**
+ * 克隆指定的数据
+ * @param target 需要克隆的数据
+ * @returns 返回一个新的数据
+ */
+export const cloneReadOnlyData = <T>(target: T): T => {
+	return cloneDeep(target)
 }
 
 /**
  * 解除只读包装
  * @param target 需要解除的只读对象, 必须 readOnly 中配置选项 options.unReadOnly 为 true, 否则将抛出错误
+ * @param sign 代理标识, 必须同 readOnly 中配置选项 options.sign 一致, 否则将抛出错误
  * @returns 返回原始的未包装的数据
  */
-export const unReadOnly = <T extends TAnyObj>(target: T): T => {
+export const unReadOnly = <T extends TAnyObj>(target: T, sign?: any): T => {
 	const type = isType(target)
 	if (!quoteData.includes(type)) return target
-	const result: T = target[unSign]
+	if (!checkReadOnlySign(target, sign)) {
+		console.warn(target, 'The current data "sign" is inconsistent !')
+		throw new TypeError('The current data "sign" is inconsistent !')
+	}
+	const result: T = target[unReadOnlySign]
 	if (isReadOnly(result)) {
-		return unReadOnly(result)
+		return unReadOnly(result, sign)
 	}
 	return result
 }

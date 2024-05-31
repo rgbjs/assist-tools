@@ -1,5 +1,6 @@
 import { describe, test, expect } from 'vitest'
-import { readOnly, isReadOnly, cloneReadOnlyData, unReadOnly } from '../src/main'
+import { cloneDeep } from 'lodash-es'
+import { readOnly, isReadOnly, cloneReadOnlyData, unReadOnly, checkReadOnlySign } from '../src/main'
 
 describe('readOnly 与 isReadOnly', () => {
 	test('readOnly 与 isReadOnly 测试', () => {
@@ -215,5 +216,56 @@ describe('unReadOnly', () => {
 	test('解除只读包装', () => {
 		const newObj = readOnly(obj, { unReadOnly: true })
 		expect(unReadOnly(newObj)).toBe(obj)
+	})
+
+	test('解除指定标识的只读包装', () => {
+		const sign = Symbol()
+		const newObj = readOnly(obj, { unReadOnly: true, sign })
+		expect(unReadOnly(newObj, sign)).toBe(obj)
+	})
+})
+
+describe('lodash 克隆 readOnly 数据', () => {
+	test('default 克隆', () => {
+		const obj = {
+			a: 'a',
+			b: 'b'
+		}
+
+		const newObj = readOnly(obj)
+		expect(cloneDeep(newObj)).toEqual(obj)
+	})
+
+	test('looseFitting 克隆', () => {
+		const obj = {
+			a: 'a',
+			b: 'b'
+		}
+
+		const newObj = readOnly(obj, 'looseFitting')
+		expect(cloneDeep(newObj)).toEqual(obj)
+	})
+
+	test('strict 克隆', () => {
+		const obj = {
+			a: 'a',
+			b: 'b'
+		}
+
+		const newObj = readOnly(obj, 'strict')
+		expect(cloneDeep(newObj)).toEqual(obj)
+	})
+})
+
+describe('readOnly 验证 sign', () => {
+	test('checkReadOnlySign', () => {
+		const obj = {
+			a: 'a',
+			b: 'b'
+		}
+
+		const newObj = readOnly(obj, { sign: 1 })
+		expect(checkReadOnlySign(newObj, 1)).toBe(true)
+		expect(checkReadOnlySign(newObj, 2)).toBe(false)
 	})
 })

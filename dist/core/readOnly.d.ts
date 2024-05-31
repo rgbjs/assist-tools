@@ -1,8 +1,8 @@
-interface TAnyObj {
+export interface TAnyObj {
     [key: string | number | symbol]: any;
 }
-type TMode<T> = 'strict' | 'default' | 'looseFitting' | ((target: T, thisArg: any, argArray: any[]) => boolean);
-interface TOptions<T> {
+export type TMode<T> = 'strict' | 'default' | 'looseFitting' | ((target: T, thisArg: any, argArray: any[]) => boolean);
+export interface TOptions<T> {
     /**
      * 模式 , 默认为 default [可选]
      * - strict 严格模式, 禁止函数调用(防止产生副作用)
@@ -19,6 +19,10 @@ interface TOptions<T> {
      * 是否允许重复包装为只读对象, 即当 readOnly 遇到的数据已经是一个只读数据了, 是否允许再包装多层, true 允许, false 不允许, 直接返回已包装对象, 默认为 false
      */
     repeatReadOnly?: boolean;
+    /**
+     * 代理标识, 只有标识一致才可使用 unReadOnly()
+     */
+    sign?: any;
 }
 /**
  * 将一个引用数据类型包装为只读数据
@@ -33,6 +37,7 @@ interface TOptions<T> {
  * 返回 true / false 来决定是否允许调用
  * - **options.unReadOnly** 是否允许 unReadOnly 解包, 默认为 false
  * - **options.repeatReadOnly** 是否允许重复包装为只读对象, 即当 readOnly 遇到的数据已经是一个只读数据了, 是否允许再包装多层, true 允许, false 不允许, 直接返回已包装对象, 默认为 false
+ * - **options.sign** 代理标识, 只有标识一致才可使用 unReadOnly() [可选]
  * @returns 返回一个只读的代理数据
  */
 export declare const readOnly: <T extends TAnyObj>(data: T, options?: TOptions<T> | TMode<T>) => T;
@@ -42,15 +47,21 @@ export declare const readOnly: <T extends TAnyObj>(data: T, options?: TOptions<T
  */
 export declare const isReadOnly: <T extends TAnyObj>(target: T) => boolean;
 /**
- * 克隆指定的只读数据
- * @param target 需要克隆的只读数据
- * @returns 返回一个新的未包装的新数据
+ * 判断一个代理数据标识是否相等
+ * @param target 判断的目标
+ * @param sign 判断的目标代理标识
  */
-export declare const cloneReadOnlyData: <T extends TAnyObj>(target: T) => T;
+export declare const checkReadOnlySign: <T extends TAnyObj>(target: T, sign: any) => boolean;
+/**
+ * 克隆指定的数据
+ * @param target 需要克隆的数据
+ * @returns 返回一个新的数据
+ */
+export declare const cloneReadOnlyData: <T>(target: T) => T;
 /**
  * 解除只读包装
  * @param target 需要解除的只读对象, 必须 readOnly 中配置选项 options.unReadOnly 为 true, 否则将抛出错误
+ * @param sign 代理标识, 必须同 readOnly 中配置选项 options.sign 一致, 否则将抛出错误
  * @returns 返回原始的未包装的数据
  */
-export declare const unReadOnly: <T extends TAnyObj>(target: T) => T;
-export {};
+export declare const unReadOnly: <T extends TAnyObj>(target: T, sign?: any) => T;

@@ -14,8 +14,6 @@ export { default as isType } from './core/isType'
 export { default as notEmpty } from './core/notEmpty'
 export { default as isStrNum } from './core/isStrNum'
 export { default as notEmptyDeep } from './core/notEmptyDeep'
-export { readOnly, isReadOnly, cloneReadOnlyData, unReadOnly } from './core/readOnly'
-// export * as ReadOnly from './core/readOnly' 低版本 webpack 无法支持
-// 兼容处理
-import * as _ReadOnly from './core/readOnly'
-export const ReadOnly = _ReadOnly
+export { readOnly, isReadOnly, cloneReadOnlyData, unReadOnly, checkReadOnlySign } from './core/readOnly'
+export { cloneDeep, cloneDeepWith } from 'lodash-es'
+export * as ReadOnly from './core/readOnly'
