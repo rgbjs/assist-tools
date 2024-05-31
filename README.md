@@ -607,7 +607,7 @@ const result1 = isReadOnly(newObj) // true
 const result2 = isReadOnly({}) // false
 ```
 
-## cloneReadOnlyData() [2.1.1 新增]
+## cloneReadOnlyData() [2.1.x 新增]
 
 克隆指定的数据
 
