@@ -1,6 +1,6 @@
 {
 	"name": "assist-tools",
-	"version": "2.2.1",
+	"version": "2.2.2",
 	"type": "module",
 	"main": "./dist/main.es.js",
 	"types": "./dist/main.d.ts",
@@ -9,6 +9,10 @@
 		"assist-tools",
 		"tools",
 		"utils"
+	],
+	"files": [
+		"dist",
+		"README.md"
 	],
 	"repository": {
 		"type": "git",
