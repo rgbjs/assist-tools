@@ -556,7 +556,7 @@ formatDate(Date.now(), 'YYYY/MM/DD hh:mm:ss') // 2023/12/14 16:20:10
 
 **接收参数:** readOnly(data [, options | mode])
 
--   data {Object|Array|Function} 需要包装为只读数据的引用数据 @param options 配置选型
+-   data {Object|Array|Function} 需要包装为只读数据的引用数据
 -   options {Options | 'strict' | 'default' | 'looseFitting' } 配置选项
 -   可直接传递 'strict' | 'default' | 'looseFitting' 简写形式(简写 mode)
 -   **options.mode** 模式 , 默认为 default [可选]
@@ -639,7 +639,7 @@ result === newObj // false
 
 -   data {any} 需要解除的只读对象, 必须 readOnly 中配置选项 options.unReadOnly 为 true, 否则将抛出错误
 
--   sign {any} 代理标识, 必须同 readOnly 中配置选项 options.sign 一致, 否则将抛出错误 [2.2.x 新增]
+-   sign {any} 代理标识, 必须同 readOnly 中配置选项 options.sign 一致, 否则将抛出错误 [可选] [2.2.x 新增]
 
 **返回值:**
 
@@ -665,7 +665,7 @@ result === obj // true
 
 -   target {any} 判断的目标
 
--   sign {any} 判断的目标代理标识
+-   sign {any} 判断的目标代理标识 [可选]
 
 **返回值:**
 
