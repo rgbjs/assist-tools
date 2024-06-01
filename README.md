@@ -35,10 +35,10 @@ import { isType } from 'assist-tools'
 console.log(isType(10)) // 'number'
 ```
 
-通常情况下使用以上方式导入即可, 上述导入方式配合构建工具可以极大减少包体积某些情况下, 由于种种原因你需要一个较低的版本时你可以使用以下方式(最低支持至 es2015) 注意: 该方式默认导入所有, tree shaking 支持较差
+如果你想使用 CommonJS 模块化规范, 那么你可以使用以下方式导入
 
 ```js
-import { isType } from 'assist-tools/dist/main.es.js'
+import { isType } from 'assist-tools/dist/main.cjs.js'
 console.log(isType(10)) // 'number'
 ```
 
