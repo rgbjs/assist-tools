@@ -1,12 +1,13 @@
 {
 	"name": "assist-tools",
-	"version": "2.2.2",
+	"version": "2.2.3",
 	"type": "module",
 	"main": "./dist/main.es.js",
 	"types": "./dist/main.d.ts",
 	"description": "一个辅助开发的工具函数集合",
 	"keywords": [
 		"assist-tools",
+		"assist",
 		"tools",
 		"utils"
 	],
@@ -16,7 +17,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/rgbjs/assist-tools"
+		"url": "git+https://github.com/rgbjs/assist-tools.git"
 	},
 	"homepage": "https://github.com/rgbjs/assist-tools",
 	"author": "feiYu",
