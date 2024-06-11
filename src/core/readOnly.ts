@@ -36,6 +36,7 @@ const cloneSign = Symbol('克隆数据只读代理数据')
 
 /**
  * 将一个引用数据类型包装为只读数据
+ * - 被代理的数据 this 将被锁定, 外部调用代理数据的方法时无法变更 this 指向
  * @param data 原始数据
  * @param options 配置选项
  * - 可直接传递 'strict' | 'default' | 'looseFitting' 简写形式(简写 mode)
@@ -106,7 +107,11 @@ export const readOnly = <T extends TAnyObj>(data: T, options: TOptions<T> | TMod
 
 			const type = isType(target[p])
 			if (type === 'function') {
-				if (config.mode === 'default') return readOnly(target[p].bind(errorProxy), options)
+				if (config.mode === 'default') {
+					return target[p] === Array.prototype[Symbol.iterator]
+						? readOnly(target[p], options)
+						: readOnly(target[p].bind(errorProxy), options)
+				}
 				return readOnly(target[p].bind(target), options)
 			} else if (type === 'object' || type === 'array') {
 				return readOnly(target[p], options)

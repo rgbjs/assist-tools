@@ -269,3 +269,22 @@ describe('readOnly 验证 sign', () => {
 		expect(checkReadOnlySign(newObj, 2)).toBe(false)
 	})
 })
+
+describe('readOnly 解构测试', () => {
+	test('对象解构', () => {
+		const { a, b } = readOnly({
+			a: 1,
+			b: 2
+		})
+
+		expect(a).toBe(1)
+		expect(b).toBe(2)
+	})
+
+	test('数组解构', () => {
+		const [a, b] = readOnly([1, 2])
+
+		expect(a).toBe(1)
+		expect(b).toBe(2)
+	})
+})

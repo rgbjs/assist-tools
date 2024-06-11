@@ -552,6 +552,8 @@ formatDate(Date.now(), 'YYYY/MM/DD hh:mm:ss') // 2023/12/14 16:20:10
 
 将一个引用数据类型包装为只读数据
 
+被代理的数据 this 将被锁定, 外部调用代理数据的方法时无法变更 this 指向
+
 **配置选项在 2.1.x 中引入, 小于此版本仅允许使用简写形式**
 
 **接收参数:** readOnly(data [, options | mode])
