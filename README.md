@@ -38,7 +38,7 @@ console.log(isType(10)) // 'number'
 如果你想使用 CommonJS 模块化规范, 那么你可以使用以下方式导入
 
 ```js
-const { isType } require('assist-tools/dist/main.cjs.js')
+const { isType } = require('assist-tools/dist/main.cjs.js')
 console.log(isType(10)) // 'number'
 ```
 
